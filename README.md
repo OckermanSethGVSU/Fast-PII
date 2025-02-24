@@ -86,13 +86,13 @@ Examples:
 --------
 
 **Single Node | 16 Thread | Window Size = 50 | Block size = 1000**
-`PII_OP("input.dat", np.int32, (50000, 50000), 5, 16, 1000)`
+`PII_OP("input.dat", np.int32, (50000, 50000), 5, 16, 1000, "sum")`
 
 **Single Node | 4 GPU | Window Size = 50 | Block size = 1000**
-`PII_OP("input.dat",  np.int32, (50000, 50000), 50, 4, 1000, GPU=True)`
+`PII_OP("input.dat",  np.int32, (50000, 50000), 50, 4, 1000, "sum", GPU=True)`
 
 **Single Node | MIG | Window Size = 50 | Block size = 1000**
-`PII_OP("input.dat", np.int32,(50000, 50000), 50, 1, 1000, MIG_IDs=[mig0, mig1, mig2])`
+`PII_OP("input.dat", np.int32,(50000, 50000), 50, 1, 1000, "sum", MIG_IDs=[mig0, mig1, mig2])`
     
 *Note: num_workers must be 1*
 
@@ -104,7 +104,7 @@ The command follows the general format: `mpirun -np <len(MIG_IDs) python3 progra
     
 *Note: Assumes input.dat is on a shared file system (networked or otherwise) and writes to that same shared file system.*
     
-`PII_OP("input.dat",  np.int32, (50000, 50000), 50, 4, 1000, GPU=True)`
+`PII_OP("input.dat",  np.int32, (50000, 50000), 50, 4, 1000, "sum", GPU=True)`
     
 
 Requires using `mpirun`: e.g.`mpirun -np 2 --hosts <host1, host2>  python3 program.py`
@@ -113,7 +113,7 @@ The command follows the general format: `mpirun -np #num_nodes --hosts <node1,..
 
 
 **MIG | 1 Node | 4 GPU MIG profiles on the node | Window Size = 50 | Block size = 1000**
-`PII_OP("input.dat",  np.int32, (50000, 50000), 50, 1, 1000, MIG_IDS=["mig0","mig1","mig2", "mig3"])`
+`PII_OP("input.dat",  np.int32, (50000, 50000), 50, 1, 1000, "sum", MIG_IDS=["mig0","mig1","mig2", "mig3"])`
     
 
 Requires using `mpirun`: e.g.`mpirun -np 4  python3 program.py`
