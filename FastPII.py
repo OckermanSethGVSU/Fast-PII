@@ -156,11 +156,11 @@ class FastPII:
                 self.comm.send(-1, dest=recv_rank, tag=idx)
 
     def consumer(self, worker_number, func, *func_args):
-        print("consumer: ", func)
+        
         while not self.producer_done.is_set() or not self.q.empty():
             try:
                 message = self.q.get(timeout=1)
-                print(message)
+                
                 
 
                 if self.GPU:
@@ -239,7 +239,6 @@ class FastPII:
                 consumer_func = self.mpi_consumer
             else:
                 consumer_func = self.consumer
-            print(i)
             consumer_thread = threading.Thread(target=consumer_func, args=(i,func,*func_args))
             consumer_thread.start()
             consumer_threads.append(consumer_thread)
@@ -378,13 +377,13 @@ Examples:
 --------
 
 Single Node | 16 Thread | Window_Size = 50 | block size = 1000
-    PII_OP("input.dat", np.int32, (50000, 50000), 5, 16, 1000)
+    PII_OP("input.dat", np.int32, (50000, 50000), 5, 16, 1000, "sum")
 
 Single Node | 4 GPU | Window_Size = 50| block size = 1000
-    PII_OP("input.dat", np.int32, (50000, 50000), 50, 4, 1000, GPU=True)
+    PII_OP("input.dat", np.int32, (50000, 50000), 50, 4, 1000, "sum",GPU=True)
 
 Single Node | MIG | Window_Size = 50 | block size = 1000
-    PII_OP("input.dat", np.int32, (50000, 50000), 50, 1, 1000, MIG_IDs=[mig0, mig1, mig2])
+    PII_OP("input.dat", np.int32, (50000, 50000), 50, 1, 1000,"sum", MIG_IDs=[mig0, mig1, mig2])
     Note: num_workers must be 1
 
     Requires using mpirun: e.g mpirun -np 3 python3 program.py
@@ -394,7 +393,7 @@ Single Node | MIG | Window_Size = 50 | block size = 1000
 Multi-Node | 2 Nodes | 4 GPU per node | Window_Size = 50 | block size = 1000
     Note: Assumes input.dat is on a shared file system
     
-    PII_OP("input.dat", np.int32, (50000, 50000), 50, 4, 1000, GPU=True, output_path="path/to/shared/file/system/")
+    PII_OP("input.dat", np.int32, (50000, 50000), 50, 4, 1000,"sum", GPU=True, output_path="path/to/shared/file/system/")
 
     Requires using mpirun: e.g.  mpirun -np 2 --hosts <host1, host2>  python3 program.py
 
@@ -402,7 +401,7 @@ Multi-Node | 2 Nodes | 4 GPU per node | Window_Size = 50 | block size = 1000
 
 MIG | 1 Node | 4 GPU MIG profiles on the node | Window Size = 50 | Block size = 1000   
 
-    PII_OP("input.dat",  np.int32, (50000, 50000), 50, 1, 1000, MIG_IDS=["mig0","mig1","mig2", "mig3"])
+    PII_OP("input.dat",  np.int32, (50000, 50000), 50, 1, 1000,"sum", MIG_IDS=["mig0","mig1","mig2", "mig3"])
     
     Requires using mpirun: e.g.mpirun -np 4  python3 program.py
 
@@ -410,7 +409,7 @@ MIG | 1 Node | 4 GPU MIG profiles on the node | Window Size = 50 | Block size = 
 """
 
 def PII_OP(filepath, input_dtype, input_shape, window_size, num_workers, block_size, func, *func_args, GPU=False, num_nodes=1, MIG_IDs=None, mmap_during_comp=False, output_path="./"):
-    pi_op = PIISweep(filepath, input_dtype, input_shape, window_size, num_workers, block_size, GPU, num_nodes, MIG_IDs, mmap_during_comp, output_path)
+    pi_op = FastPII(filepath, input_dtype, input_shape, window_size, num_workers, block_size, GPU, num_nodes, MIG_IDs, mmap_during_comp, output_path)
     pi_op.run(func, *func_args)
     
     if not pi_op.MPI_NEEDED:
