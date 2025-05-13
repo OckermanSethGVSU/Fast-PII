@@ -1,10 +1,30 @@
 # Fast-PII
 Fast-PII is a library for performing parallel sliding window analysis. Fast-PII allows users to easily use multiple GPUs, CPU threads, or GPU Multi-Instances to process their data in parallel. Fast-PII follows a intuitive master-worker parallelism model, where each worker will ping the master for its next assignment when it is free. Our framework will split your image in such a way that ensures that no resolution is lost due to data chunking and allow the user to define the block size to fit their memory needs. Fast-PII also offers support for both single-node and multi-node environments.
 
-
 This package primarily uses the integral image method to perform computations. However, it is also designed to be flexible, allowing users to define and pass their own computation methods that can leverage Fast-PII's built-in parallelism.  
 
+### Citation
+ [Our GPGPU 2025 paper](https://dl.acm.org/doi/10.1145/3725798.3725804).
 
+```
+@inproceedings{10.1145/3725798.3725804,
+author = {Ockerman, Seth and Carrier, Erin},
+title = {Evaluating Parallel Sliding Window Techniques: Algorithmic and Multi-GPU Advancements with Fast-PII},
+year = {2025},
+isbn = {9798400714917},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3725798.3725804},
+doi = {10.1145/3725798.3725804},
+booktitle = {Proceedings of the 17th Workshop on General Purpose Processing Using GPU},
+pages = {35–41},
+numpages = {7},
+keywords = {Sliding Window Analysis, Integral Image, Multi-GPU, Multi-Instance GPU},
+location = {
+},
+series = {GPGPU '25}
+}
+```
 
 
 
